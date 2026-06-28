@@ -276,4 +276,4 @@ MIT License — feel free to use, modify, and share.
 
 ---
 
-<p align="center"><em>Made with ❤️ and a bit of Apple spirit.</em></p>
+
