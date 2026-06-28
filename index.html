@@ -633,7 +633,7 @@
 // ─── 状态 ───
 let viewYear, viewMonth;
 let selectedDate = '';
-let calOpen = false;
+let calOpen = true;
 const STORAGE_KEY = 'my_notes_data';
 
 // ─── DOM ───
@@ -663,13 +663,16 @@ function getTimeStr() { return `${pad2(tpHour)}:${pad2(tpMin)}`; }
 
 function makeCol(container, range, val, onChange) {
   const H = 36;
+  const VISIBLE = 5;          // 180px / 36px
+  const HALF = Math.floor(VISIBLE / 2); // 2
   const R = 99;
   const mid = Math.floor(R / 2);
   container.innerHTML = '';
   container.style.cssText = 'height:180px;overflow-y:scroll;scrollbar-width:none;';
 
+  // padding 只用于滚动缓冲，可视区刚好 5 行
   const inner = document.createElement('div');
-  inner.style.cssText = `padding:72px 0;`;
+  inner.style.cssText = `padding:${HALF * H}px 0;`;
 
   for (let r = 0; r < R; r++) {
     for (let i = 0; i < range; i++) {
@@ -697,11 +700,11 @@ function makeCol(container, range, val, onChange) {
         if (st < threshold) container.scrollTop = st + block * (R - 3);
         else if (st > max - threshold) container.scrollTop = st - block * (R - 3);
 
-        const center = container.scrollTop + container.clientHeight / 2;
-        const idx = Math.round((center - 72) / H);
+        // 中间行索引 = (scrollTop + 容器半高 - paddingTop) / 行高
+        const centerIdx = Math.round((container.scrollTop + 90 - HALF * H) / H);
         const items = container.querySelectorAll('.tp-item');
         items.forEach(el => el.classList.remove('active'));
-        const item = items[idx];
+        const item = items[centerIdx];
         if (!item) return;
         item.classList.add('active');
         onChange(+item.dataset.val);
@@ -1031,6 +1034,8 @@ $('btnToday').addEventListener('click', () => {
   renderDay(s);
   updateNavDate(s);
   updateSelectedLabel(s);
+  // 同步日历展开状态
+  calArrow.classList.add('open');
 })();
 </script>
 </body>
