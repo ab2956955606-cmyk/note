@@ -1,0 +1,71 @@
+/* ============ NAV ============ */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  max-width: 800px;
+  padding: 16px 0 8px;
+  background: rgba(242,242,246,0.82);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-title {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-title svg { flex-shrink: 0; }
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-date {
+  font-size: 14px;
+  font-weight: 500;
+  color: #8e8e93;
+}
+.btn-today {
+  background: #007aff;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+}
+.btn-today:hover { opacity: .85; transform: scale(1.03); }
+.btn-today:active { transform: scale(.96); }
+
+/* 日历切换按钮 */
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #007aff;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity .2s;
+  margin-top: 2px;
+  margin-left: 34px;
+}
+.nav-toggle:hover { opacity: .7; }
+.nav-toggle .arrow {
+  display: inline-block;
+  transition: transform .25s ease;
+  font-size: 10px;
+}
+.nav-toggle .arrow.open { transform: rotate(180deg); }

@@ -107,8 +107,26 @@ localStorage
 
 ```
 note/
-├── index.html      ← 完整应用（HTML + CSS + JS 全部内联）
-├── README.md       ← 本文件
+├── index.html          ← 入口页面（仅 HTML 骨架 + 模块引用）
+├── README.md           ← 本文件
+│
+├── css/                ← 样式文件（按功能拆分）
+│   ├── base.css        ←   全局重置、字体、容器
+│   ├── nav.css         ←   顶部导航栏
+│   ├── calendar.css    ←   日历卡片、网格、标记
+│   ├── panel.css       ←   规划面板、列表项、添加区域
+│   └── time-picker.css ←   自定义时间选择器
+│
+├── js/                 ← 脚本模块（ES Module）
+│   ├── app.js          ←   应用入口：协调各模块初始化
+│   ├── state.js        ←   全局状态变量
+│   ├── helpers.js      ←   工具函数
+│   ├── storage.js      ←   数据持久化层（localStorage）
+│   ├── notes.js        ←   月备注功能
+│   ├── calendar.js     ←   日历渲染与导航
+│   ├── plans.js        ←   规划增删改查 + 完成情况
+│   └── timepicker.js   ←   时间选择器组件
+│
 └── .git/
 ```
 
