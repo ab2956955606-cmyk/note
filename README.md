@@ -24,6 +24,14 @@
 
 它的设计目标很简单：让日常计划变得轻一点。日历负责提供时间感，规划列表负责承载行动，完成记录负责留下回顾的痕迹。所有数据都保存在当前浏览器本地，适合个人、离线、轻量的日常使用。
 
+### 界面预览
+
+<p align="center">
+  <img src="assets/mynotes-demo.png" alt="MyNotes 中文界面功能展示" width="860">
+</p>
+
+截图展示了 MyNotes 的主要功能：月历用于查看每天的计划状态，月备注用于保存阶段目标和提醒，规划列表可以记录时间、事项内容与完成情况，底部输入栏用于快速添加新的日程事项。
+
 ### ✨ 核心体验
 
 | 模块 | 说明 |
@@ -156,6 +164,14 @@ MyNotes 使用原生 HTML、CSS 和 JavaScript 编写。脚本通过 `<script>` 
 **MyNotes** is a pure frontend daily planner for personal notes, time-based tasks, and completion records. It has no account system, no backend, and no build process. Open `MyNotes.html` in a browser and start planning.
 
 The product idea is intentionally small: make daily planning feel lighter. The calendar gives a sense of time, the plan list captures action, and completion notes preserve the details worth reviewing. Everything is stored locally in the current browser.
+
+### Interface Preview
+
+<p align="center">
+  <img src="assets/mynotes-demo-en.png" alt="MyNotes English interface feature walkthrough" width="860">
+</p>
+
+The screenshot shows the English interface in use: the calendar summarizes monthly status, monthly notes keep goals and reminders, the plan list captures timed tasks, and completion notes preserve review details. The bottom input area is used to add new tasks quickly.
 
 ### ✨ Experience
 
