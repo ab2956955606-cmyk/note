@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="css/calendar.css">
 <link rel="stylesheet" href="css/panel.css">
 <link rel="stylesheet" href="css/time-picker.css">
+<link rel="stylesheet" href="css/ai.css">
 </head>
 <body>
 <svg class="icon-sprite" aria-hidden="true">
@@ -45,6 +46,10 @@
   </symbol>
   <symbol id="icon-chevron-right" viewBox="0 0 24 24">
     <path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="icon-spark" viewBox="0 0 24 24">
+    <path d="M12 3.5 14.2 9l5.8 2.2-5.8 2.2L12 19l-2.2-5.6L4 11.2 9.8 9 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    <path d="m18.5 3 .8 2.1 2.2.9-2.2.8-.8 2.2-.9-2.2-2.1-.8 2.1-.9.9-2.1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
   </symbol>
 </svg>
 
@@ -133,6 +138,53 @@
     </div>
   </div>
 
+  <!-- AI 规划助手 -->
+  <section class="ai-panel" id="aiPanel">
+    <div class="ai-head">
+      <div>
+        <div class="ai-title">
+          <svg class="icon"><use href="#icon-spark"></use></svg>
+          <span data-i18n="aiTitle">AI 规划助手</span>
+        </div>
+        <p data-i18n="aiSubtitle">把长期目标拆成日程，按完成情况复盘和调整。</p>
+      </div>
+      <span class="ai-mode" id="aiMode">Mock AI</span>
+    </div>
+
+    <div class="ai-grid">
+      <label class="ai-field">
+        <span data-i18n="aiGoalLabel">长期目标</span>
+        <textarea id="aiGoalInput" rows="3" data-i18n-placeholder="aiGoalPlaceholder" placeholder="例如：3 个月内拿到北京 AI 应用开发实习"></textarea>
+      </label>
+      <div class="ai-side">
+        <label class="ai-field">
+          <span data-i18n="aiDeadlineLabel">截止日期</span>
+          <input id="aiDeadlineInput" type="date">
+        </label>
+        <label class="ai-field">
+          <span data-i18n="aiHoursLabel">每天可用时间</span>
+          <input id="aiHoursInput" type="number" min="0.5" step="0.5" value="2">
+        </label>
+      </div>
+    </div>
+
+    <label class="ai-field">
+      <span data-i18n="aiContextLabel">资料 / JD / 约束</span>
+      <textarea id="aiContextInput" rows="4" data-i18n-placeholder="aiContextPlaceholder" placeholder="粘贴岗位 JD、课程资料、个人基础或时间限制，AI 会基于这些内容制定计划。"></textarea>
+    </label>
+
+    <div class="ai-actions">
+      <button class="ai-btn primary" id="aiGenerateBtn" type="button" data-i18n="aiGenerate">生成阶段计划</button>
+      <button class="ai-btn" id="aiReviewBtn" type="button" data-i18n="aiReview">复盘今天</button>
+      <button class="ai-btn" id="aiSearchBtn" type="button" data-i18n="aiSearch">资料问答</button>
+      <button class="ai-btn" id="aiApplyBtn" type="button" data-i18n="aiApply">写入今天</button>
+    </div>
+
+    <div class="ai-output" id="aiOutput">
+      <div class="ai-empty" data-i18n="aiEmpty">输入目标后生成计划；没有后端或 API key 时会使用本地模拟结果。</div>
+    </div>
+  </section>
+
 </div>
 
 <script src="js/helpers.js"></script>
@@ -143,6 +195,7 @@
 <script src="js/timepicker.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/plans.js"></script>
+<script src="js/ai.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

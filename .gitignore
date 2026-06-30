@@ -13,3 +13,11 @@ Thumbs.db
 # 临时文件
 *.log
 *.tmp
+
+# Python / backend
+__pycache__/
+*.pyc
+.env
+data/
+.venv/
+venv/

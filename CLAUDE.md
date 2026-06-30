@@ -2,14 +2,15 @@
 
 ## 项目简介
 
-MyNotes 是一个纯前端个人笔记与日常规划工具。项目无需后端、无需构建，直接用浏览器打开 `MyNotes.html` 即可运行。数据保存在浏览器 `localStorage` 中。
+MyNotes 是一个 AI 日常规划助手。前端可直接打开 `MyNotes.html` 运行；后端为可选 FastAPI 服务，用于 AI 计划生成、复盘和 RAG 资料问答。没有 API key 时，前端和后端都提供 mock 结果，方便演示。
 
 ## 技术栈
 
-- 原生 HTML、CSS、JavaScript
-- 非 ES Module，脚本通过 `<script>` 顺序加载
-- 无框架、无包管理器、无构建工具
-- 本地存储：`localStorage`
+- 前端：原生 HTML、CSS、JavaScript，非 ES Module
+- 后端：Python FastAPI
+- 数据：前端 `localStorage`，后端 SQLite
+- AI：LLM API adapter + mock fallback
+- RAG：轻量文本切片与关键词检索
 
 ## 入口与结构
 
@@ -19,6 +20,14 @@ README.md
 AGENTS.md
 CLAUDE.md
 assets/
+backend/
+  app/
+    main.py
+    schemas.py
+    db.py
+    services/
+requirements.txt
+.env.example
 css/
   base.css
   nav.css
@@ -34,6 +43,7 @@ js/
   timepicker.js
   calendar.js
   plans.js
+  ai.js
   app.js
 ```
 
@@ -46,12 +56,21 @@ js/
 - 多语言文案维护在 `js/lang.js`，静态文本使用 `data-i18n` 和 `data-i18n-placeholder`。
 - CSS 按模块维护，避免无关样式混入。
 - README 中引用的截图放在 `assets/`。
+- 后端接口保持在 `/api/agent/*` 与 `/api/rag/*`。
+- 不提交 `.env`、数据库文件或虚拟环境。
 
 ## 数据键
 
 - `my_notes_data`：每日规划数据
 - `my_notes_lang`：语言偏好
 - `note_{year}_{month}`：月备注
+
+## AI 能力
+
+- 目标拆解：长期目标生成阶段计划和今日任务。
+- 动态复盘：根据当天完成情况生成建议。
+- RAG 问答：对粘贴的 JD/资料做轻量检索并返回片段。
+- Agent 工具：前端可将 AI 任务写入今天的规划。
 
 ## 设计方向
 
@@ -66,6 +85,13 @@ MyNotes.html
 ```
 
 也可以用 VS Code Live Server 预览。
+
+后端可选运行：
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.app.main:app --reload
+```
 
 ## Git
 

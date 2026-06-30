@@ -26,6 +26,7 @@
   initCalendar();
   initPlans();
   initTimePicker();
+  initAiPlanner();
 
   // ── 初始化状态：默认今天 ──
   const d = new Date();

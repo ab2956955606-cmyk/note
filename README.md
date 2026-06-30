@@ -2,7 +2,7 @@
   <br>
   <strong>MyNotes</strong>
   <br>
-  <span>一款安静、轻盈、纯前端的日常笔记与规划工具</span>
+  <span>一款安静、轻盈的 AI 日常规划助手</span>
   <br>
   <span>A quiet daily planner for notes, time, and completion.</span>
   <br><br>
@@ -20,7 +20,7 @@
 
 ## 中文
 
-**MyNotes** 是一款纯前端个人日常笔记与规划工具。它不需要账号、不需要后端、不需要构建流程，只需要打开 `MyNotes.html`，就可以在浏览器里记录每天要做的事、完成情况，以及每个月的备注。
+**MyNotes** 是一款 AI 日常规划助手。它保留了轻量日历、每日规划、完成情况和月备注，也新增了 AI 目标拆解、日复盘、资料问答和一键写入计划能力。前端可以直接打开 `MyNotes.html` 运行；后端 FastAPI 服务是可选增强，用于真实 AI API、RAG 和 Agent 工具调用。
 
 它的设计目标很简单：让日常计划变得轻一点。日历负责提供时间感，规划列表负责承载行动，完成记录负责留下回顾的痕迹。所有数据都保存在当前浏览器本地，适合个人、离线、轻量的日常使用。
 
@@ -40,6 +40,8 @@
 | ✅ 每日规划 | 为选中日期添加事项，支持时间、正文、完成勾选和删除。 |
 | 🧾 完成情况 | 每条事项下方都可以记录执行结果，适合复盘和追踪。 |
 | 📝 月备注 | 每个月拥有独立备注区，用来记录阶段目标、提醒或灵感。 |
+| ✨ AI 规划 | 输入长期目标、截止日期和每天可用时间，生成阶段计划与今日任务。 |
+| 🧠 RAG 问答 | 粘贴岗位 JD、学习资料或个人基础，返回相关片段和建议。 |
 | 🌐 双语界面 | 支持中文与 English 切换，语言偏好自动保存。 |
 | 🔒 本地存储 | 数据写入 `localStorage`，关闭页面后仍会保留。 |
 
@@ -52,6 +54,22 @@
 ```
 
 项目没有安装步骤。你可以直接通过文件协议打开，也可以使用 VS Code Live Server 预览。
+
+如果要启用后端 AI API：
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.app.main:app --reload
+```
+
+默认接口地址为 `http://127.0.0.1:8000`。没有 API key 时，系统会使用 mock AI，仍然可以完整演示目标拆解、复盘和资料问答流程。
+
+如果直接用文件方式打开 `MyNotes.html`，前端默认使用 Mock AI。需要让静态页面调用本地后端时，可在浏览器控制台执行：
+
+```js
+localStorage.setItem('my_notes_api_enabled', '1')
+localStorage.setItem('my_notes_api_base', 'http://127.0.0.1:8000')
+```
 
 ### 🧭 使用说明
 
@@ -84,6 +102,14 @@
 
 - 点击右上角“中文 / EN”切换语言。
 - 使用 `Ctrl + L` 或 `Command + L` 也可以快速切换。
+
+**✨ AI 规划助手**
+
+- 输入长期目标、截止日期、每天可用时间和资料约束。
+- 点击“生成阶段计划”获得阶段拆解和今日建议任务。
+- 点击“复盘今天”根据当天完成情况生成复盘建议。
+- 点击“资料问答”对粘贴的 JD/资料做轻量 RAG 检索。
+- 点击“写入今天”把 AI 生成的任务加入当天计划。
 
 ### 🎨 设计语言
 
@@ -119,6 +145,14 @@ note/
 ├── MyNotes.html
 ├── README.md
 ├── AGENTS.md
+├── requirements.txt
+├── .env.example
+├── backend/
+│   └── app/
+│       ├── main.py
+│       ├── schemas.py
+│       ├── db.py
+│       └── services/
 ├── css/
 │   ├── base.css
 │   ├── nav.css
@@ -134,6 +168,7 @@ note/
     ├── notes.js
     ├── calendar.js
     ├── plans.js
+    ├── ai.js
     └── timepicker.js
 ```
 
@@ -150,8 +185,27 @@ MyNotes 使用原生 HTML、CSS 和 JavaScript 编写。脚本通过 `<script>` 
 <script src="js/timepicker.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/plans.js"></script>
+<script src="js/ai.js"></script>
 <script src="js/app.js"></script>
 ```
+
+后端使用 FastAPI，核心接口：
+
+| 接口 | 作用 |
+| --- | --- |
+| `POST /api/agent/plan` | 根据目标、时间和资料生成阶段计划 |
+| `POST /api/agent/review` | 根据当天完成情况生成复盘建议 |
+| `POST /api/rag/query` | 对资料/JD 做轻量检索问答 |
+| `GET /api/health` | 健康检查 |
+
+`.env.example` 中提供了模型配置项。默认 `AI_PROVIDER=mock`，可以接入 DeepSeek/OpenAI 兼容接口。
+
+### 简历亮点
+
+- 独立实现 AI 日常规划助手，覆盖目标拆解、日程生成、动态复盘和资料问答。
+- 前端保持轻量原生实现，后端使用 FastAPI 暴露 Agent/RAG API。
+- 设计 mock fallback，保证无 API key 时也能完整演示产品闭环。
+- 基于 localStorage 和 SQLite 分别承载前端任务数据与后端 AI 事件记录。
 
 ### 🌐 浏览器支持
 
@@ -161,7 +215,7 @@ MyNotes 使用原生 HTML、CSS 和 JavaScript 编写。脚本通过 `<script>` 
 
 ## English
 
-**MyNotes** is a pure frontend daily planner for personal notes, time-based tasks, and completion records. It has no account system, no backend, and no build process. Open `MyNotes.html` in a browser and start planning.
+**MyNotes** is an AI daily planner for personal notes, time-based tasks, and completion records. It keeps the lightweight calendar experience and adds AI goal decomposition, daily review, material QA, and one-click task insertion. The frontend can run directly from `MyNotes.html`; the optional FastAPI backend enables real LLM, RAG, and Agent workflows.
 
 The product idea is intentionally small: make daily planning feel lighter. The calendar gives a sense of time, the plan list captures action, and completion notes preserve the details worth reviewing. Everything is stored locally in the current browser.
 
@@ -181,6 +235,8 @@ The screenshot shows the English interface in use: the calendar summarizes month
 | ✅ Daily plans | Add tasks to a selected date with time, content, completion state, and deletion. |
 | 🧾 Completion notes | Record the result of each task for reflection and follow-up. |
 | 📝 Monthly notes | Keep month-level goals, reminders, or loose thoughts. |
+| ✨ AI planning | Turn a long-term goal, deadline, and daily hours into phased tasks. |
+| 🧠 RAG QA | Paste JDs or learning materials and retrieve relevant snippets. |
 | 🌐 Bilingual UI | Switch between Chinese and English with saved preference. |
 | 🔒 Local first | Data is stored in `localStorage` and remains after closing the page. |
 
@@ -193,6 +249,22 @@ The screenshot shows the English interface in use: the calendar summarizes month
 ```
 
 There is no installation step. You can open the file directly or preview it with VS Code Live Server.
+
+To enable the backend AI API:
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.app.main:app --reload
+```
+
+The default API base is `http://127.0.0.1:8000`. Without an API key, mock AI keeps the full planning, review, and retrieval demo available.
+
+When opening `MyNotes.html` directly via file protocol, the frontend uses Mock AI by default. To call a local backend from the static page, run this in the browser console:
+
+```js
+localStorage.setItem('my_notes_api_enabled', '1')
+localStorage.setItem('my_notes_api_base', 'http://127.0.0.1:8000')
+```
 
 ### 🧭 How To Use
 
@@ -225,6 +297,14 @@ The note area beside the calendar is stored per month. Switching months automati
 
 - Click “中文 / EN” in the top-right corner.
 - Or use `Ctrl + L` / `Command + L` to switch quickly.
+
+**✨ AI Planner**
+
+- Enter a long-term goal, deadline, daily hours, and optional materials.
+- Generate a phased plan and suggested tasks for today.
+- Review today based on actual completion data.
+- Ask pasted materials with a lightweight RAG flow.
+- Apply generated tasks directly to today’s plan.
 
 ### 🎨 Visual Direction
 
@@ -260,6 +340,14 @@ note/
 ├── MyNotes.html
 ├── README.md
 ├── AGENTS.md
+├── requirements.txt
+├── .env.example
+├── backend/
+│   └── app/
+│       ├── main.py
+│       ├── schemas.py
+│       ├── db.py
+│       └── services/
 ├── css/
 │   ├── base.css
 │   ├── nav.css
@@ -275,6 +363,7 @@ note/
     ├── notes.js
     ├── calendar.js
     ├── plans.js
+    ├── ai.js
     └── timepicker.js
 ```
 
