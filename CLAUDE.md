@@ -1,80 +1,74 @@
-# CLAUDE.md — MyNotes 笔记应用
+# CLAUDE.md - MyNotes
 
-## 项目概述
+## 项目简介
 
-一款纯前端、无需后端的个人日常笔记/规划工具。浏览器直接打开 `index.html` 即可使用，所有数据存储在 `localStorage` 中。
+MyNotes 是一个纯前端个人笔记与日常规划工具。项目无需后端、无需构建，直接用浏览器打开 `MyNotes.html` 即可运行。数据保存在浏览器 `localStorage` 中。
 
 ## 技术栈
 
-- 原生 HTML + CSS + JavaScript（`<script>` 顺序加载，非 ES Module）
-- 无框架、无构建工具、无后端
-- 存储：浏览器 `localStorage`
+- 原生 HTML、CSS、JavaScript
+- 非 ES Module，脚本通过 `<script>` 顺序加载
+- 无框架、无包管理器、无构建工具
+- 本地存储：`localStorage`
 
-## 设计语言
+## 入口与结构
 
-- Apple Human Interface Guidelines 风格
-- 字体：`-apple-system` / `SF Pro Display` / `PingFang SC`
-- 背景色：`#f2f2f6`（iOS 系统灰）
-- 卡片：`backdrop-filter: blur(16px)` 毛玻璃效果
-- 强调色：`#007aff`（Apple Blue）
-- 圆角体系：`20px` / `14px` / `10px`
-- 阴影：`0 4px 24px rgba(0,0,0,0.04)`
-- 动效：200–350ms `ease` / `cubic-bezier`
-
-## 项目结构
-
-```
-note/
-├── index.html            ← 入口
-├── README.md             ← 项目文档
-├── CLAUDE.md             ← 本文件
-│
-├── css/
-│   ├── base.css          ← 全局重置、字体、容器
-│   ├── nav.css           ← 顶部导航栏
-│   ├── calendar.css      ← 日历卡片、网格、标记
-│   ├── panel.css         ← 规划面板、列表项、添加区域
-│   └── time-picker.css   ← 自定义时间选择器
-│
-├── js/
-│   ├── app.js            ← 应用入口：协调各模块初始化
-│   ├── state.js          ← 全局状态变量
-│   ├── helpers.js        ← 工具函数
-│   ├── storage.js        ← 数据持久化层（localStorage）
-│   ├── lang.js           ← 多语言（中/英）
-│   ├── notes.js          ← 月备注功能
-│   ├── calendar.js       ← 日历渲染与导航
-│   ├── plans.js          ← 规划增删改查 + 完成情况
-│   └── timepicker.js     ← 时间选择器组件
-│
-├── .git/
-└── .gitignore
+```text
+MyNotes.html
+README.md
+AGENTS.md
+CLAUDE.md
+assets/
+css/
+  base.css
+  nav.css
+  calendar.css
+  panel.css
+  time-picker.css
+js/
+  helpers.js
+  state.js
+  storage.js
+  lang.js
+  notes.js
+  timepicker.js
+  calendar.js
+  plans.js
+  app.js
 ```
 
-## 代码约定
+## 开发约定
 
-- **CSS**：按功能拆分文件（base/nav/calendar/panel/time-picker）
-- **JS**：按功能拆分文件，通过 `<script>` 顺序加载（加载顺序见 index.html）
-- **全局状态**：集中在 `state.js` 中定义
-- **数据持久化**：统一通过 `storage.js` 访问
-- **多语言**：用 `data-i18n` / `data-i18n-placeholder` 属性标记，在 `lang.js` 中维护翻译
-- **localStorage key**：
-  - `my_notes_data` → 所有日期的规划数据（JSON）
-  - `note_2026_6` → 各月备注（按年月命名）
+- 保持原生前端实现，不引入框架或构建流程。
+- JS 文件依赖加载顺序见 `MyNotes.html`，新增脚本时必须注意顺序。
+- 全局状态集中在 `js/state.js`。
+- 数据读写统一走 `js/storage.js`。
+- 多语言文案维护在 `js/lang.js`，静态文本使用 `data-i18n` 和 `data-i18n-placeholder`。
+- CSS 按模块维护，避免无关样式混入。
+- README 中引用的截图放在 `assets/`。
+
+## 数据键
+
+- `my_notes_data`：每日规划数据
+- `my_notes_lang`：语言偏好
+- `note_{year}_{month}`：月备注
+
+## 设计方向
+
+整体风格参考 Apple Human Interface Guidelines：浅灰背景、毛玻璃卡片、清晰层级、克制动效。主色为 Apple Blue，完成状态使用绿色，删除/危险状态使用红色。
+
+## 运行方式
+
+直接打开：
+
+```text
+MyNotes.html
+```
+
+也可以用 VS Code Live Server 预览。
 
 ## Git
 
 - 默认分支：`main`
-- git 用户：`xixi_git`
-- 交互辅助工具用 `gh` CLI
-
-## 构建/运行
-
-无需构建，直接在浏览器中打开 `index.html` 即可。建议用 Live Server 或直接文件协议打开。
-
-## 用户偏好
-
-- 交流语言：中文
-- 开发者角色：个人开发者，追求简洁美观实用的设计
-- 操作系统：Windows 11
-- 终端：Git Bash
+- 远程仓库：`https://github.com/ab2956955606-cmyk/MyNotes`
+- 提交前检查 `git status --short --branch`
