@@ -5,6 +5,16 @@ use tauri_plugin_shell::ShellExt;
 
 struct ApiSidecar(Mutex<Option<CommandChild>>);
 
+impl Drop for ApiSidecar {
+    fn drop(&mut self) {
+        if let Ok(mut child) = self.0.lock() {
+            if let Some(child) = child.as_mut() {
+                let _ = child.kill();
+            }
+        }
+    }
+}
+
 fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
@@ -16,7 +26,7 @@ fn main() {
             let port = std::env::var("MYNOTES_API_PORT").unwrap_or_else(|_| "8000".to_string());
             let sidecar = app
                 .shell()
-                .sidecar("mynotes-api")?
+                .sidecar("binaries/mynotes-api")?
                 .env("MYNOTES_ENV", "desktop")
                 .env("MYNOTES_API_PORT", port);
 

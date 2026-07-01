@@ -1,8 +1,8 @@
 # MyNotes AI Desktop
 
-This folder is the Phase 7 desktop shell scaffold.
+This folder contains the Tauri desktop shell and Phase 8 Windows release pipeline.
 
-It is intentionally not a completed installer build. The current environment is expected to miss Rust/Cargo, Tauri CLI, and PyInstaller, so Phase 7 only prepares the project structure that Phase 8 can build from.
+The app bundles the Vite web build and launches the FastAPI backend as a Tauri sidecar named `mynotes-api`.
 
 ## Development
 
@@ -25,3 +25,17 @@ http://127.0.0.1:5173/MyNotes.html
 2. `scripts/build-backend.ps1` packages the FastAPI backend as `mynotes-api`.
 3. Tauri bundles the web dist and launches the backend through the `mynotes-api` sidecar.
 4. The sidecar receives `MYNOTES_ENV=desktop` and stores SQLite data in the user data directory unless `MYNOTES_DB_PATH` is set.
+
+## Release Build
+
+```powershell
+.\scripts\check-packaging-toolchain.ps1
+.\scripts\build-release.ps1 -Version 1.1.0
+```
+
+Outputs:
+
+```text
+release/MyNotes-AI-v1.1.0-windows-x64.msi
+release/MyNotes-AI-v1.1.0-windows-x64.sha256
+```

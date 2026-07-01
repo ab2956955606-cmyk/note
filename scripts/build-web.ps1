@@ -11,12 +11,21 @@ Push-Location $WebDir
 try {
     if (Test-Path "package-lock.json") {
         npm.cmd ci
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm ci failed for apps/web."
+        }
     }
     else {
         npm.cmd install
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm install failed for apps/web."
+        }
     }
 
     npm.cmd run build
+    if ($LASTEXITCODE -ne 0) {
+        throw "npm run build failed for apps/web."
+    }
 }
 finally {
     Pop-Location

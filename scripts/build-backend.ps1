@@ -14,6 +14,14 @@ if (-not (Get-Command $Python -ErrorAction SilentlyContinue)) {
 Push-Location $Root
 try {
     & $Python -m pip install -r requirements.txt
+    if ($LASTEXITCODE -ne 0) {
+        throw "pip install failed for requirements.txt"
+    }
+
+    & $Python -m pip install -r requirements-build.txt
+    if ($LASTEXITCODE -ne 0) {
+        throw "pip install failed for requirements-build.txt"
+    }
 
     & $Python -m PyInstaller --version *> $null
     if ($LASTEXITCODE -ne 0) {

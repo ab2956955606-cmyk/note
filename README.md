@@ -37,7 +37,8 @@ The project uses React + TypeScript + Vite on the frontend, FastAPI on the backe
 | Phase 5 | Done | SQLite FTS5/BM25 RAG, document library, source citations |
 | Phase 6 | Done | TXT/MD upload RAG and six-dimension planner evaluation |
 | Phase 7 | Done | Tauri desktop shell, FastAPI sidecar packaging entry, build scripts, desktop CI check |
-| Phase 8 | Next | PyInstaller sidecar build, Tauri installer, GitHub Release assets |
+| Phase 8 | Done | Windows installer scripts, sidecar packaging checks, GitHub Release automation |
+| Phase 9 | Next | Desktop polish, auto-update, code signing, and portfolio presentation upgrades |
 
 ## Features
 
@@ -124,14 +125,28 @@ http://127.0.0.1:5173/MyNotes.html
 
 ## Desktop Preparation
 
-Phase 7 provides the desktop scaffold only. It does not ship a final Windows installer yet.
+Phase 8 provides the Windows release pipeline. A machine with Node.js, Python, PyInstaller, Rust/Cargo, and the Tauri CLI can build the installer locally, while GitHub Actions can publish release assets from a `v*` tag.
 
 ```powershell
+.\scripts\check-packaging-toolchain.ps1
 .\scripts\build-web.ps1
 .\scripts\build-backend.ps1
 cd apps\desktop
 npm install
 npm run build
+```
+
+Build the full release package:
+
+```powershell
+.\scripts\build-release.ps1 -Version 1.1.0
+```
+
+The expected release assets are:
+
+```text
+release/MyNotes-AI-v1.1.0-windows-x64.msi
+release/MyNotes-AI-v1.1.0-windows-x64.sha256
 ```
 
 The release design is:
@@ -202,6 +217,12 @@ Desktop scaffold:
 
 ```powershell
 .\scripts\check-desktop-config.ps1
+```
+
+Packaging toolchain:
+
+```powershell
+.\scripts\check-packaging-toolchain.ps1
 ```
 
 Sidecar health check:

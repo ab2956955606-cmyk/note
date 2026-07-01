@@ -2,26 +2,39 @@
 
 from pathlib import Path
 
+from PyInstaller.utils.hooks import collect_submodules, copy_metadata
+
 
 ROOT = Path.cwd()
 entry = ROOT / "scripts" / "pyinstaller" / "mynotes_api_entry.py"
+
+hiddenimports = [
+    "backend.app.main",
+    "backend.app.routers.health",
+    "backend.app.routers.plans",
+    "backend.app.routers.month_notes",
+    "backend.app.routers.settings",
+    "backend.app.routers.agent",
+    "backend.app.routers.planning",
+    "backend.app.routers.rag",
+    "backend.app.routers.preferences",
+]
+hiddenimports += collect_submodules("uvicorn")
+hiddenimports += collect_submodules("fastapi")
+hiddenimports += collect_submodules("pydantic")
+hiddenimports += collect_submodules("pydantic_core")
+
+datas = []
+datas += copy_metadata("fastapi")
+datas += copy_metadata("uvicorn")
+datas += copy_metadata("pydantic")
 
 a = Analysis(
     [str(entry)],
     pathex=[str(ROOT)],
     binaries=[],
-    datas=[],
-    hiddenimports=[
-        "backend.app.main",
-        "backend.app.routers.health",
-        "backend.app.routers.plans",
-        "backend.app.routers.month_notes",
-        "backend.app.routers.settings",
-        "backend.app.routers.agent",
-        "backend.app.routers.planning",
-        "backend.app.routers.rag",
-        "backend.app.routers.preferences",
-    ],
+    datas=datas,
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],

@@ -1,6 +1,6 @@
 # MyNotes AI Desktop Packaging Notes
 
-Phase 7 prepares the desktop shell and sidecar packaging structure. It does not produce the final Windows installer yet.
+Phase 8 turns the desktop scaffold into a Windows installer and GitHub Release pipeline.
 
 ## Target Shape
 
@@ -35,17 +35,23 @@ When `MYNOTES_ENV=desktop`, the backend resolves SQLite to:
 
 If `MYNOTES_DB_PATH` is set, it wins over the desktop default.
 
-## Required Toolchain For Phase 8
+## Required Toolchain
 
-Install these before attempting a real installer build:
+Install these before attempting a real local installer build:
 
 1. Node.js 20+
 2. Python 3.11+
 3. Rust and Cargo from rustup
 4. Microsoft Visual Studio Build Tools with C++ desktop workload
-5. Tauri CLI for `apps/desktop`
-6. PyInstaller inside `.venv`
+5. Tauri CLI through `apps/desktop/package.json`
+6. PyInstaller from `requirements-build.txt`
 7. Microsoft Edge WebView2 Runtime
+
+Check the local packaging toolchain:
+
+```powershell
+.\scripts\check-packaging-toolchain.ps1
+```
 
 ## Development Mode
 
@@ -84,7 +90,11 @@ Build the backend sidecar:
 .\scripts\build-backend.ps1
 ```
 
-The backend script expects PyInstaller. If PyInstaller is missing, it prints the exact install command instead of failing silently.
+The backend script installs `requirements.txt` and `requirements-build.txt`, then packages `mynotes-api.exe` with PyInstaller. The sidecar copied into Tauri must be named:
+
+```text
+apps/desktop/src-tauri/binaries/mynotes-api-x86_64-pc-windows-msvc.exe
+```
 
 Poll the sidecar health endpoint:
 
@@ -98,11 +108,50 @@ Run the static desktop check:
 .\scripts\check-desktop-config.ps1
 ```
 
-## Phase 8 Checklist
+## Build The Release Package
 
-- Install Rust/Cargo and verify `cargo --version`.
-- Install Tauri CLI and verify `npx tauri --version`.
-- Install PyInstaller in `.venv`.
-- Build `mynotes-api-x86_64-pc-windows-msvc.exe` into `apps/desktop/src-tauri/binaries`.
-- Run `npm run build` from `apps/desktop`.
-- Attach the generated installer and checksum to a GitHub Release.
+```powershell
+.\scripts\build-release.ps1 -Version 1.1.0
+```
+
+Expected outputs:
+
+```text
+release/MyNotes-AI-v1.1.0-windows-x64.msi
+release/MyNotes-AI-v1.1.0-windows-x64.sha256
+```
+
+Publish with GitHub CLI after the build succeeds:
+
+```powershell
+gh.cmd auth status
+.\scripts\build-release.ps1 -Version 1.1.0 -CreateGitHubRelease
+```
+
+The project also includes `.github/workflows/desktop-release.yml`. Pushing a `v*` tag or manually running the workflow builds the Windows installer and uploads the MSI plus SHA256 checksum to GitHub Release.
+
+## Manual Acceptance
+
+- Install `MyNotes-AI-v1.1.0-windows-x64.msi`.
+- Open `MyNotes AI`.
+- Confirm the web UI loads.
+- Confirm the FastAPI sidecar responds on `/api/health`.
+- Try calendar, goal planning, RAG query, TXT/MD material flow, and planner evaluation.
+- Close the app and confirm the `mynotes-api` sidecar process exits.
+
+## Common Failures
+
+| Symptom | Fix |
+| --- | --- |
+| `cargo` or `rustc` missing | Install Rust with rustup and reopen the terminal |
+| `PyInstaller` missing | Run `.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt` |
+| `tauri` missing | Run `cd apps\desktop; npm.cmd install` |
+| `gh.ps1` blocked | Use `gh.cmd` instead of `gh` in PowerShell |
+| MSI missing | Check `apps/desktop/src-tauri/target/release/bundle/msi` and rerun `npm.cmd run build` |
+
+## Phase 9 Checklist
+
+- Add code signing for Windows releases.
+- Add Tauri auto-update.
+- Add desktop-specific empty/loading/error states.
+- Add release screenshots and a portfolio demo section.

@@ -9,7 +9,7 @@
       "identifier": "shell:allow-execute",
       "allow": [
         {
-          "name": "mynotes-api",
+          "name": "binaries/mynotes-api",
           "sidecar": true
         }
       ]
