@@ -4,9 +4,9 @@
   "version": "1.1.0",
   "identifier": "com.mynotes.ai",
   "build": {
-    "beforeDevCommand": "powershell -ExecutionPolicy Bypass -File ../../../scripts/dev-desktop.ps1",
+    "beforeDevCommand": "powershell -ExecutionPolicy Bypass -File ../../scripts/dev-desktop.ps1",
     "devUrl": "http://127.0.0.1:5173/MyNotes.html",
-    "beforeBuildCommand": "powershell -ExecutionPolicy Bypass -File ../../../scripts/build-web.ps1",
+    "beforeBuildCommand": "powershell -ExecutionPolicy Bypass -File ../../scripts/build-web.ps1",
     "frontendDist": "../../web/dist"
   },
   "app": {
@@ -28,6 +28,7 @@
   "bundle": {
     "active": true,
     "targets": ["msi"],
+    "icon": ["icons/icon.ico"],
     "externalBin": ["binaries/mynotes-api"]
   }
 }

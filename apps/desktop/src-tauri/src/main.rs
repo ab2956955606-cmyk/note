@@ -1,5 +1,6 @@
 use std::sync::Mutex;
 
+use tauri::Manager;
 use tauri_plugin_shell::process::CommandChild;
 use tauri_plugin_shell::ShellExt;
 
@@ -8,7 +9,7 @@ struct ApiSidecar(Mutex<Option<CommandChild>>);
 impl Drop for ApiSidecar {
     fn drop(&mut self) {
         if let Ok(mut child) = self.0.lock() {
-            if let Some(child) = child.as_mut() {
+            if let Some(child) = child.take() {
                 let _ = child.kill();
             }
         }
