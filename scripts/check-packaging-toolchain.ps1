@@ -29,7 +29,21 @@ Test-CommandPresent "npm.cmd" "Install Node.js 20+."
 Test-CommandPresent "npx.cmd" "Install Node.js 20+."
 Test-CommandPresent "cargo" "Install Rust with rustup: https://rustup.rs/"
 Test-CommandPresent "rustc" "Install Rust with rustup: https://rustup.rs/"
-Test-CommandPresent "gh.cmd" "Install GitHub CLI or use the GitHub Actions release workflow."
+
+$GhCommand = Get-Command "gh.exe" -ErrorAction SilentlyContinue
+if (-not $GhCommand) {
+    $GhCommand = Get-Command "gh.cmd" -ErrorAction SilentlyContinue
+}
+
+if ($GhCommand) {
+    Write-Host "OK: GitHub CLI candidate $($GhCommand.Source)"
+}
+elseif ($RequireGitHubAuth) {
+    $Missing.Add("GitHub CLI missing. Install the official GitHub CLI or use the GitHub Actions release workflow.")
+}
+else {
+    Write-Host "WARN: GitHub CLI not found. Local release publishing will be unavailable."
+}
 
 try {
     $PythonOutput = & $Python --version 2>&1
@@ -74,7 +88,7 @@ else {
 
 if ($RequireGitHubAuth) {
     try {
-        gh.cmd auth status
+        & $GhCommand.Source auth status
         if ($LASTEXITCODE -eq 0) {
             Write-Host "OK: GitHub CLI auth"
         }

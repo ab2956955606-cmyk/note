@@ -64,17 +64,24 @@ Write-Host "SHA256 file: $HashPath"
 if ($CreateGitHubRelease) {
     $NotesPath = Join-Path $Root "docs\release-v1.1.0.md"
     & (Join-Path $PSScriptRoot "check-packaging-toolchain.ps1") -RequireGitHubAuth
+    $GhCommand = Get-Command "gh.exe" -ErrorAction SilentlyContinue
+    if (-not $GhCommand) {
+        $GhCommand = Get-Command "gh.cmd" -ErrorAction SilentlyContinue
+    }
+    if (-not $GhCommand) {
+        throw "GitHub CLI is required for local release publishing."
+    }
 
     git diff --quiet
     if ($LASTEXITCODE -ne 0) {
         throw "Working tree has uncommitted changes. Commit before publishing a GitHub Release."
     }
 
-    gh.cmd release view $Tag *> $null
+    & $GhCommand.Source release view $Tag *> $null
     if ($LASTEXITCODE -eq 0) {
-        gh.cmd release upload $Tag $InstallerPath $HashPath --clobber
+        & $GhCommand.Source release upload $Tag $InstallerPath $HashPath --clobber
     }
     else {
-        gh.cmd release create $Tag $InstallerPath $HashPath --title "MyNotes AI $Tag" --notes-file $NotesPath
+        & $GhCommand.Source release create $Tag $InstallerPath $HashPath --title "MyNotes AI $Tag" --notes-file $NotesPath
     }
 }

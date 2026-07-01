@@ -121,10 +121,10 @@ release/MyNotes-AI-v1.1.0-windows-x64.msi
 release/MyNotes-AI-v1.1.0-windows-x64.sha256
 ```
 
-Publish with GitHub CLI after the build succeeds:
+Publish locally with the official GitHub CLI after the build succeeds:
 
 ```powershell
-gh.cmd auth status
+gh.exe auth status
 .\scripts\build-release.ps1 -Version 1.1.0 -CreateGitHubRelease
 ```
 
@@ -146,7 +146,7 @@ The project also includes `.github/workflows/desktop-release.yml`. Pushing a `v*
 | `cargo` or `rustc` missing | Install Rust with rustup and reopen the terminal |
 | `PyInstaller` missing | Run `.\.venv\Scripts\python.exe -m pip install -r requirements-build.txt` |
 | `tauri` missing | Run `cd apps\desktop; npm.cmd install` |
-| `gh.ps1` blocked | Use `gh.cmd` instead of `gh` in PowerShell |
+| `gh.ps1` blocked | Use official `gh.exe`, or publish through GitHub Actions |
 | MSI missing | Check `apps/desktop/src-tauri/target/release/bundle/msi` and rerun `npm.cmd run build` |
 
 ## Phase 9 Checklist
